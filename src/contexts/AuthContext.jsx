@@ -1,5 +1,12 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
-import { onAuthStateChanged, signInWithPopup, signOut, updateProfile } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword,
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  signOut,
+  updateProfile,
+} from 'firebase/auth';
 import { doc, getDoc, serverTimestamp, setDoc, updateDoc } from 'firebase/firestore';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { auth, db, googleProvider, storage } from '../lib/firebase';
@@ -88,6 +95,40 @@ export function AuthProvider({ children }) {
     return result.user;
   };
 
+  const loginWithEmail = async (email, password) => {
+    const result = await signInWithEmailAndPassword(auth, email.trim(), password);
+    const currentProfile = await ensureUserProfile(result.user);
+    setUser(result.user);
+    setProfile(currentProfile);
+    return result.user;
+  };
+
+  const registerWithEmail = async ({ displayName, email, password, phone = '' }) => {
+    const result = await createUserWithEmailAndPassword(auth, email.trim(), password);
+    const cleanProfile = {
+      ...defaultProfile,
+      displayName: displayName.trim(),
+      email: result.user.email || email.trim(),
+      phone: phone.trim(),
+      photoURL: result.user.photoURL || '',
+      coins: 0,
+      planId: 'free',
+      createdAt: serverTimestamp(),
+      updatedAt: serverTimestamp(),
+    };
+
+    await updateProfile(result.user, {
+      displayName: cleanProfile.displayName,
+    });
+
+    await setDoc(doc(db, 'users', result.user.uid), cleanProfile, { merge: true });
+
+    setUser(result.user);
+    setProfile(normalizeProfile(result.user, cleanProfile));
+
+    return result.user;
+  };
+
   const logout = () => signOut(auth);
 
   const saveProfile = async ({ displayName, phone, photoURL }) => {
@@ -164,7 +205,9 @@ export function AuthProvider({ children }) {
       user,
       profile,
       loading,
+      loginWithEmail,
       loginWithGoogle,
+      registerWithEmail,
       logout,
       saveProfile,
       uploadProfilePhoto,

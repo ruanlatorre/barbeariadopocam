@@ -1,18 +1,74 @@
 import { useState } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 
 export default function Login() {
   const navigate = useNavigate();
-  const { user, loading: authLoading, loginWithGoogle } = useAuth();
+  const { user, loading: authLoading, loginWithEmail, loginWithGoogle } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [emailLoading, setEmailLoading] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleLogin = (e) => {
+  const getLoginErrorMessage = (loginError) => {
+    if (loginError.code === 'auth/invalid-credential' || loginError.code === 'auth/wrong-password') {
+      return 'E-mail ou senha inválidos.';
+    }
+
+    if (loginError.code === 'auth/user-not-found') {
+      return 'Nenhuma conta encontrada com este e-mail.';
+    }
+
+    if (loginError.code === 'auth/too-many-requests') {
+      return 'Muitas tentativas. Aguarde um pouco antes de tentar novamente.';
+    }
+
+    if (loginError.code === 'auth/operation-not-allowed') {
+      return 'Ative o login por e-mail e senha no Firebase Authentication.';
+    }
+
+    return 'Não foi possível entrar. Tente novamente.';
+  };
+
+  const getGoogleLoginErrorMessage = (loginError) => {
+    if (loginError.code === 'auth/operation-not-allowed') {
+      return 'O login com Google está desativado no Firebase Authentication.';
+    }
+
+    if (loginError.code === 'auth/unauthorized-domain') {
+      return 'Este domínio não está autorizado no Firebase. Use localhost ou adicione este domínio em Authentication > Settings > Authorized domains.';
+    }
+
+    if (loginError.code === 'auth/popup-blocked') {
+      return 'O navegador bloqueou o popup do Google. Libere popups para este site e tente novamente.';
+    }
+
+    if (loginError.code === 'auth/popup-closed-by-user') {
+      return 'A janela do Google foi fechada antes de concluir o login.';
+    }
+
+    if (loginError.code === 'permission-denied') {
+      return 'O Google autenticou, mas o Firestore bloqueou a criação/leitura do perfil. Verifique as regras da coleção users.';
+    }
+
+    return `Não foi possível entrar com Google${loginError.code ? ` (${loginError.code})` : ''}.`;
+  };
+
+  const handleLogin = async (e) => {
     e.preventDefault();
-    setError('Use o botão do Google para entrar nesta versão.');
+    setEmailLoading(true);
+    setError('');
+
+    try {
+      await loginWithEmail(email, password);
+      navigate('/home');
+    } catch (loginError) {
+      console.error('Erro no login com e-mail:', loginError);
+      setError(getLoginErrorMessage(loginError));
+    } finally {
+      setEmailLoading(false);
+    }
   };
 
   const handleGoogleLogin = async () => {
@@ -24,7 +80,7 @@ export default function Login() {
       navigate('/home');
     } catch (loginError) {
       console.error('Erro no login com Google:', loginError);
-      setError('Não foi possível entrar com Google. Verifique se o provedor Google está ativado no Firebase.');
+      setError(getGoogleLoginErrorMessage(loginError));
     } finally {
       setGoogleLoading(false);
     }
@@ -59,7 +115,7 @@ export default function Login() {
         <div className="login-card">
           
           {/* Google OAuth Button */}
-          <button type="button" onClick={handleGoogleLogin} disabled={googleLoading || authLoading} className="google-btn group disabled:opacity-60 disabled:cursor-not-allowed">
+          <button type="button" onClick={handleGoogleLogin} disabled={googleLoading || authLoading || emailLoading} className="google-btn group disabled:opacity-60 disabled:cursor-not-allowed">
             <svg className="google-icon" viewBox="0 0 24 24">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"></path>
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"></path>
@@ -119,8 +175,8 @@ export default function Login() {
             </div>
 
             {/* Submit Button */}
-            <button type="submit" className="login-submit-btn hard-shadow">
-              Entrar <span>→</span>
+            <button type="submit" disabled={emailLoading || authLoading || googleLoading} className="login-submit-btn hard-shadow disabled:opacity-60 disabled:cursor-not-allowed">
+              {emailLoading ? 'Entrando...' : 'Entrar'} <span>→</span>
             </button>
           </form>
         </div>
@@ -129,7 +185,7 @@ export default function Login() {
         <div className="login-footer">
           <p className="login-footer-text">
             Novo por aqui? 
-            <a href="#" className="login-footer-link">Criar Conta</a>
+            <Link to="/register" className="login-footer-link">Criar Conta</Link>
           </p>
         </div>
 

@@ -14,6 +14,9 @@ export default function Profile() {
   const [formData, setFormData] = useState({ displayName: '', phone: '', photoURL: '' });
   const [photoFile, setPhotoFile] = useState(null);
   const [photoPreview, setPhotoPreview] = useState('');
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [showAddCardForm, setShowAddCardForm] = useState(false);
 
   useEffect(() => {
     setFormData({
@@ -221,12 +224,12 @@ export default function Profile() {
         </section>
 
         <section className="flex flex-col gap-2">
-          <button className="w-full bg-[#181818] border border-surface-variant p-4 rounded-xl flex items-center gap-4 hover:bg-surface-container-high transition-colors">
+          <button onClick={() => setShowHistoryModal(true)} className="w-full bg-[#181818] border border-surface-variant p-4 rounded-xl flex items-center gap-4 hover:bg-surface-container-high transition-colors">
             <span className="material-symbols-outlined text-primary-fixed-dim">history</span>
             <span className="flex-grow text-left font-headline-md text-sm uppercase">Histórico de Cortes</span>
             <span className="material-symbols-outlined text-on-surface-variant">chevron_right</span>
           </button>
-          <button className="w-full bg-[#181818] border border-surface-variant p-4 rounded-xl flex items-center gap-4 hover:bg-surface-container-high transition-colors">
+          <button onClick={() => setShowPaymentModal(true)} className="w-full bg-[#181818] border border-surface-variant p-4 rounded-xl flex items-center gap-4 hover:bg-surface-container-high transition-colors">
             <span className="material-symbols-outlined text-primary-fixed-dim">payments</span>
             <span className="flex-grow text-left font-headline-md text-sm uppercase">Métodos de Pagamento</span>
             <span className="material-symbols-outlined text-on-surface-variant">chevron_right</span>
@@ -241,6 +244,91 @@ export default function Profile() {
           </button>
         </section>
       </main>
+
+      {/* Modal de Histórico */}
+      {showHistoryModal && (
+        <div className="fixed inset-0 z-[100] bg-[#0A0A0A]/80 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity">
+          <div className="bg-[#181818] border border-surface-variant rounded-2xl w-full max-w-md overflow-hidden shadow-2xl scale-100 transition-transform">
+            <div className="flex justify-between items-center p-6 border-b border-surface-variant">
+              <h2 className="font-headline-md text-xl text-primary-fixed-dim uppercase flex items-center gap-2">
+                <span className="material-symbols-outlined">history</span> Histórico
+              </h2>
+              <button onClick={() => setShowHistoryModal(false)} className="w-8 h-8 flex items-center justify-center rounded-full text-on-surface-variant hover:text-primary-fixed-dim hover:bg-surface-container-high transition-colors">
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <div className="p-6 max-h-[60vh] overflow-y-auto flex flex-col gap-4">
+              <div className="text-center py-10 opacity-70">
+                <span className="material-symbols-outlined text-5xl mb-3 text-primary-fixed-dim/50">event_busy</span>
+                <p className="font-body-md text-on-surface-variant text-sm">Nenhum histórico encontrado ainda.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Pagamentos */}
+      {showPaymentModal && (
+        <div className="fixed inset-0 z-[100] bg-[#0A0A0A]/80 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity">
+          <div className="bg-[#181818] border border-surface-variant rounded-2xl w-full max-w-md overflow-hidden shadow-2xl scale-100 transition-transform flex flex-col max-h-[85vh]">
+            <div className="flex justify-between items-center p-6 border-b border-surface-variant shrink-0">
+              <h2 className="font-headline-md text-xl text-primary-fixed-dim uppercase flex items-center gap-2">
+                <span className="material-symbols-outlined">{showAddCardForm ? 'add_card' : 'payments'}</span> 
+                {showAddCardForm ? 'Novo Cartão' : 'Pagamentos'}
+              </h2>
+              <button onClick={() => { setShowPaymentModal(false); setShowAddCardForm(false); }} className="w-8 h-8 flex items-center justify-center rounded-full text-on-surface-variant hover:text-primary-fixed-dim hover:bg-surface-container-high transition-colors">
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <div className="p-6 overflow-y-auto flex-grow flex flex-col gap-4">
+              {showAddCardForm ? (
+                <form className="flex flex-col gap-4 animate-in fade-in slide-in-from-right-4 duration-300" onSubmit={(e) => { e.preventDefault(); setShowAddCardForm(false); alert('Cartão adicionado com sucesso!'); }}>
+                  <label className="flex flex-col gap-1">
+                    <span className="font-label-md text-xs text-on-surface-variant uppercase tracking-wider">Número do Cartão</span>
+                    <input type="text" placeholder="0000 0000 0000 0000" className="bg-[#0A0A0A]/40 border border-surface-variant rounded-lg p-3 text-on-surface font-body-md focus:border-primary-fixed-dim focus:outline-none transition-colors" required maxLength="19" />
+                  </label>
+                  
+                  <label className="flex flex-col gap-1">
+                    <span className="font-label-md text-xs text-on-surface-variant uppercase tracking-wider">Nome no Cartão</span>
+                    <input type="text" placeholder="Como impresso no cartão" className="bg-[#0A0A0A]/40 border border-surface-variant rounded-lg p-3 text-on-surface font-body-md focus:border-primary-fixed-dim focus:outline-none transition-colors" required />
+                  </label>
+
+                  <div className="flex gap-4">
+                    <label className="flex flex-col gap-1 flex-1">
+                      <span className="font-label-md text-xs text-on-surface-variant uppercase tracking-wider">Validade</span>
+                      <input type="text" placeholder="MM/AA" className="bg-[#0A0A0A]/40 border border-surface-variant rounded-lg p-3 text-on-surface font-body-md focus:border-primary-fixed-dim focus:outline-none transition-colors" required maxLength="5" />
+                    </label>
+                    <label className="flex flex-col gap-1 flex-1">
+                      <span className="font-label-md text-xs text-on-surface-variant uppercase tracking-wider">CVV</span>
+                      <input type="text" placeholder="123" className="bg-[#0A0A0A]/40 border border-surface-variant rounded-lg p-3 text-on-surface font-body-md focus:border-primary-fixed-dim focus:outline-none transition-colors" required maxLength="4" />
+                    </label>
+                  </div>
+
+                  <div className="flex gap-3 mt-4">
+                    <button type="submit" className="flex-1 bg-primary-fixed-dim text-[#0A0A0A] font-headline-md text-sm uppercase py-3 rounded-lg hard-shadow-hover transition-transform active:scale-95">
+                      Salvar Cartão
+                    </button>
+                    <button type="button" onClick={() => setShowAddCardForm(false)} className="flex-1 bg-transparent border border-surface-variant text-on-surface font-headline-md text-sm uppercase py-3 rounded-lg hover:bg-surface-container-high transition-colors active:scale-95">
+                      Voltar
+                    </button>
+                  </div>
+                </form>
+              ) : (
+                <div className="flex flex-col gap-4 animate-in fade-in slide-in-from-left-4 duration-300">
+                  <div className="text-center py-6 opacity-70">
+                    <span className="material-symbols-outlined text-5xl mb-3 text-primary-fixed-dim/50">credit_card_off</span>
+                    <p className="font-body-md text-on-surface-variant text-sm">Nenhum método de pagamento cadastrado.</p>
+                  </div>
+                  <button onClick={() => setShowAddCardForm(true)} className="w-full border border-dashed border-primary-fixed-dim/50 text-primary-fixed-dim p-4 rounded-xl flex flex-col items-center justify-center gap-2 hover:bg-primary-fixed-dim/10 transition-colors group">
+                    <span className="material-symbols-outlined group-hover:scale-110 transition-transform">add_circle</span>
+                    <span className="font-headline-md text-sm uppercase">Adicionar Cartão</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
 
       <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface-container/98 border-t-2 border-surface-variant shadow-[0_-4px_10px_rgba(0,0,0,0.5)]">
         <Link to="/home" style={{ textDecoration: 'none' }} className="flex flex-col items-center justify-center text-secondary opacity-70 hover:text-primary-fixed transition-all active:scale-90 duration-200 ease-out px-4 py-1">

@@ -1,6 +1,14 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 export default function SubscriptionPlans() {
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedPlan, setSelectedPlan] = useState(null);
+
+  const handleSubscribe = (planName) => {
+    setSelectedPlan(planName);
+    setShowPaymentModal(true);
+  };
   return (
     <div className="plans-wrapper font-body-md antialiased flex flex-col relative overflow-x-hidden">
       {/* TopAppBar */}
@@ -8,7 +16,7 @@ export default function SubscriptionPlans() {
         <div className="flex items-center gap-4">
           <Link to="/profile">
             <div className="h-10 w-10 rounded-full bg-surface-container-high overflow-hidden border border-surface-variant flex items-center justify-center">
-              <span className="material-symbols-outlined text-primary-fixed-dim" style={{fontVariationSettings: "'FILL' 1"}}>person</span>
+              <span className="material-symbols-outlined text-primary-fixed-dim" style={{ fontVariationSettings: "'FILL' 1" }}>person</span>
             </div>
           </Link>
           <h1 className="font-display-lg-mobile text-headline-md-mobile font-black text-primary-fixed-dim uppercase tracking-tighter">Barbearia do Poçam</h1>
@@ -41,19 +49,19 @@ export default function SubscriptionPlans() {
               </div>
               <ul className="space-y-4 mb-8 flex-grow">
                 <li className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-primary-fixed-dim mt-0.5" style={{fontVariationSettings: "'FILL' 1"}}>check_circle</span>
+                  <span className="material-symbols-outlined text-primary-fixed-dim mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                   <span className="font-body-md text-body-md text-on-surface">2 Cortes Assinatura por mês</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-primary-fixed-dim mt-0.5" style={{fontVariationSettings: "'FILL' 1"}}>check_circle</span>
+                  <span className="material-symbols-outlined text-primary-fixed-dim mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                   <span className="font-body-md text-body-md text-on-surface">1 Aparo de Barba</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-primary-fixed-dim mt-0.5" style={{fontVariationSettings: "'FILL' 1"}}>check_circle</span>
+                  <span className="material-symbols-outlined text-primary-fixed-dim mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                   <span className="font-body-md text-body-md text-on-surface">Bebida de Cortesia</span>
                 </li>
               </ul>
-              <button className="w-full bg-transparent border-2 border-surface-variant text-on-surface font-label-md text-label-md uppercase tracking-widest py-4 rounded-sm hover:border-primary-fixed-dim hover:text-primary-fixed-dim transition-colors cursor-pointer">Selecionar Prata</button>
+              <button onClick={() => handleSubscribe('Silver')} className="w-full bg-transparent border-2 border-surface-variant text-on-surface font-label-md text-label-md uppercase tracking-widest py-4 rounded-sm hover:border-primary-fixed-dim hover:text-primary-fixed-dim transition-colors cursor-pointer">Selecionar Prata</button>
             </div>
           </article>
 
@@ -72,23 +80,23 @@ export default function SubscriptionPlans() {
               </div>
               <ul className="space-y-4 mb-8 flex-grow">
                 <li className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-primary-fixed-dim mt-0.5" style={{fontVariationSettings: "'FILL' 1"}}>check_circle</span>
+                  <span className="material-symbols-outlined text-primary-fixed-dim mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                   <span className="font-body-md text-body-md text-on-surface font-bold">Cortes Assinatura Ilimitados</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-primary-fixed-dim mt-0.5" style={{fontVariationSettings: "'FILL' 1"}}>check_circle</span>
+                  <span className="material-symbols-outlined text-primary-fixed-dim mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                   <span className="font-body-md text-body-md text-on-surface">Barba Ilimitada</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-primary-fixed-dim mt-0.5" style={{fontVariationSettings: "'FILL' 1"}}>check_circle</span>
+                  <span className="material-symbols-outlined text-primary-fixed-dim mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                   <span className="font-body-md text-body-md text-on-surface">Prioridade no Agendamento</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-primary-fixed-dim mt-0.5" style={{fontVariationSettings: "'FILL' 1"}}>check_circle</span>
+                  <span className="material-symbols-outlined text-primary-fixed-dim mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                   <span className="font-body-md text-body-md text-on-surface">Bebidas Premium</span>
                 </li>
               </ul>
-              <button className="w-full bg-primary-fixed-dim text-[#0A0A0A] font-label-md text-label-md uppercase tracking-widest py-4 rounded-sm hard-shadow font-bold cursor-pointer border-none">Assinar Ouro</button>
+              <button onClick={() => handleSubscribe('Gold')} className="w-full bg-primary-fixed-dim text-[#0A0A0A] font-label-md text-label-md uppercase tracking-widest py-4 rounded-sm hard-shadow font-bold cursor-pointer border-none">Assinar Ouro</button>
             </div>
           </article>
 
@@ -105,43 +113,90 @@ export default function SubscriptionPlans() {
               </div>
               <ul className="space-y-4 mb-8 flex-grow">
                 <li className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-primary-fixed-dim mt-0.5" style={{fontVariationSettings: "'FILL' 1"}}>check_circle</span>
+                  <span className="material-symbols-outlined text-primary-fixed-dim mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                   <span className="font-body-md text-body-md text-on-surface">Tudo do plano Gold</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-primary-fixed-dim mt-0.5" style={{fontVariationSettings: "'FILL' 1"}}>check_circle</span>
+                  <span className="material-symbols-outlined text-primary-fixed-dim mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                   <span className="font-body-md text-body-md text-on-surface">Barba com Toalha Quente Semanal</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-primary-fixed-dim mt-0.5" style={{fontVariationSettings: "'FILL' 1"}}>check_circle</span>
+                  <span className="material-symbols-outlined text-primary-fixed-dim mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                   <span className="font-body-md text-body-md text-on-surface">Acesso ao Lounge VIP Exclusivo</span>
                 </li>
                 <li className="flex items-start gap-3">
-                  <span className="material-symbols-outlined text-primary-fixed-dim mt-0.5" style={{fontVariationSettings: "'FILL' 1"}}>check_circle</span>
+                  <span className="material-symbols-outlined text-primary-fixed-dim mt-0.5" style={{ fontVariationSettings: "'FILL' 1" }}>check_circle</span>
                   <span className="font-body-md text-body-md text-on-surface">20% de Desconto em Produtos</span>
                 </li>
               </ul>
-              <button className="w-full bg-transparent border-2 border-surface-variant text-on-surface font-label-md text-label-md uppercase tracking-widest py-4 rounded-sm hover:border-primary-fixed-dim hover:text-primary-fixed-dim transition-colors cursor-pointer">Selecionar Platina</button>
+              <button onClick={() => handleSubscribe('Platinum')} className="w-full bg-transparent border-2 border-surface-variant text-on-surface font-label-md text-label-md uppercase tracking-widest py-4 rounded-sm hover:border-primary-fixed-dim hover:text-primary-fixed-dim transition-colors cursor-pointer">Selecionar Platina</button>
             </div>
           </article>
         </div>
       </main>
 
+      {/* Payment Modal */}
+      {showPaymentModal && (
+        <div className="fixed inset-0 z-[100] bg-[#0A0A0A]/80 backdrop-blur-sm flex items-center justify-center p-4 transition-opacity">
+          <div className="bg-[#181818] border border-surface-variant rounded-2xl w-full max-w-md overflow-hidden shadow-2xl scale-100 transition-transform flex flex-col">
+            <div className="flex justify-between items-center p-6 border-b border-surface-variant shrink-0">
+              <h2 className="font-headline-md text-xl text-primary-fixed-dim uppercase flex items-center gap-2">
+                <span className="material-symbols-outlined">shopping_cart_checkout</span>
+                Assinar {selectedPlan}
+              </h2>
+              <button onClick={() => setShowPaymentModal(false)} className="w-8 h-8 flex items-center justify-center rounded-full text-on-surface-variant hover:text-primary-fixed-dim hover:bg-surface-container-high transition-colors">
+                <span className="material-symbols-outlined">close</span>
+              </button>
+            </div>
+            <div className="p-6 flex flex-col gap-4">
+              <p className="font-body-md text-on-surface-variant text-sm mb-2">Selecione a forma de pagamento desejada para concluir sua assinatura:</p>
+
+              <button onClick={() => { setShowPaymentModal(false); alert('Redirecionando para pagamento via Pix...'); }} className="w-full bg-[#181818] border border-surface-variant p-4 rounded-xl flex items-center gap-4 hover:border-primary-fixed-dim transition-colors group">
+                <span className="material-symbols-outlined text-primary-fixed-dim group-hover:scale-110 transition-transform">qr_code_scanner</span>
+                <div className="flex-grow text-left">
+                  <span className="block font-headline-md text-sm uppercase text-on-surface">Pix</span>
+                  <span className="block font-body-md text-xs text-on-surface-variant">Aprovação imediata</span>
+                </div>
+                <span className="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+              </button>
+
+              <button onClick={() => { setShowPaymentModal(false); alert('Redirecionando para pagamento via Cartão...'); }} className="w-full bg-[#181818] border border-surface-variant p-4 rounded-xl flex items-center gap-4 hover:border-primary-fixed-dim transition-colors group">
+                <span className="material-symbols-outlined text-primary-fixed-dim group-hover:scale-110 transition-transform">credit_card</span>
+                <div className="flex-grow text-left">
+                  <span className="block font-headline-md text-sm uppercase text-on-surface">Cartão de Crédito/Débito</span>
+                  <span className="block font-body-md text-xs text-on-surface-variant">Até 12x sem juros</span>
+                </div>
+                <span className="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+              </button>
+
+              <button onClick={() => { setShowPaymentModal(false); alert('Redirecionando para pagamento via Boleto...'); }} className="w-full bg-[#181818] border border-surface-variant p-4 rounded-xl flex items-center gap-4 hover:border-primary-fixed-dim transition-colors group">
+                <span className="material-symbols-outlined text-primary-fixed-dim group-hover:scale-110 transition-transform">receipt</span>
+                <div className="flex-grow text-left">
+                  <span className="block font-headline-md text-sm uppercase text-on-surface">Boleto Bancário</span>
+                  <span className="block font-body-md text-xs text-on-surface-variant">Aprovação em até 3 dias úteis</span>
+                </div>
+                <span className="material-symbols-outlined text-on-surface-variant">chevron_right</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* BottomNavBar (Mobile Only) */}
       <nav className="fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-4 py-3 bg-surface-container/98 border-t-2 border-surface-variant shadow-[0_-4px_10px_rgba(0,0,0,0.5)] rounded-t-xl">
-        <Link to="/home" className="flex flex-col items-center justify-center text-secondary opacity-70 hover:text-primary-fixed transition-all active:scale-90 duration-200 ease-out p-2" style={{textDecoration: 'none'}}>
+        <Link to="/home" className="flex flex-col items-center justify-center text-secondary opacity-70 hover:text-primary-fixed transition-all active:scale-90 duration-200 ease-out p-2" style={{ textDecoration: 'none' }}>
           <span className="material-symbols-outlined text-2xl mb-1">home</span>
           <span className="font-label-md text-label-md uppercase tracking-widest text-[10px]">Home</span>
         </Link>
-        <Link to="/schedule" className="flex flex-col items-center justify-center text-secondary opacity-70 hover:text-primary-fixed transition-all active:scale-90 duration-200 ease-out p-2" style={{textDecoration: 'none'}}>
+        <Link to="/schedule" className="flex flex-col items-center justify-center text-secondary opacity-70 hover:text-primary-fixed transition-all active:scale-90 duration-200 ease-out p-2" style={{ textDecoration: 'none' }}>
           <span className="material-symbols-outlined text-2xl mb-1">calendar_month</span>
           <span className="font-label-md text-label-md uppercase tracking-widest text-[10px]">Schedule</span>
         </Link>
-        <Link to="/plans" className="flex flex-col items-center justify-center text-primary-fixed-dim bg-on-primary-fixed-variant/20 rounded-xl px-4 py-1 hover:text-primary-fixed transition-all active:scale-90 duration-200 ease-out" style={{textDecoration: 'none'}}>
-          <span className="material-symbols-outlined text-2xl mb-1" style={{fontVariationSettings: "'FILL' 1"}}>loyalty</span>
+        <Link to="/plans" className="flex flex-col items-center justify-center text-primary-fixed-dim bg-on-primary-fixed-variant/20 rounded-xl px-4 py-1 hover:text-primary-fixed transition-all active:scale-90 duration-200 ease-out" style={{ textDecoration: 'none' }}>
+          <span className="material-symbols-outlined text-2xl mb-1" style={{ fontVariationSettings: "'FILL' 1" }}>loyalty</span>
           <span className="font-label-md text-label-md uppercase tracking-widest text-[10px] font-bold">Plans</span>
         </Link>
-        <Link to="/profile" className="flex flex-col items-center justify-center text-secondary opacity-70 hover:text-primary-fixed transition-all active:scale-90 duration-200 ease-out p-2" style={{textDecoration: 'none'}}>
+        <Link to="/profile" className="flex flex-col items-center justify-center text-secondary opacity-70 hover:text-primary-fixed transition-all active:scale-90 duration-200 ease-out p-2" style={{ textDecoration: 'none' }}>
           <span className="material-symbols-outlined text-2xl mb-1">person</span>
           <span className="font-label-md text-label-md uppercase tracking-widest text-[10px]">Profile</span>
         </Link>
