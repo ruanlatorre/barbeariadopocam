@@ -1,0 +1,96 @@
+{
+  "services": {
+    "cabelo": {
+      "name": "Cabelo",
+      "icon": "content_cut",
+      "price": 45,
+      "durationMinutes": 45,
+      "active": true,
+      "order": 1
+    },
+    "barba": {
+      "name": "Barba",
+      "icon": "face",
+      "price": 35,
+      "durationMinutes": 30,
+      "active": true,
+      "order": 2
+    },
+    "quimica": {
+      "name": "Química",
+      "icon": "science",
+      "price": 90,
+      "durationMinutes": 90,
+      "active": true,
+      "order": 3
+    },
+    "estetica": {
+      "name": "Estética",
+      "icon": "spa",
+      "price": 60,
+      "durationMinutes": 60,
+      "active": true,
+      "order": 4
+    }
+  },
+  "barbers": {
+    "rafa": {
+      "name": "Rafa",
+      "role": "Mestre Barbeiro",
+      "specialties": ["cabelo", "barba"],
+      "active": true,
+      "order": 1
+    },
+    "leo": {
+      "name": "Leo",
+      "role": "Especialista em Degradê",
+      "specialties": ["cabelo", "barba"],
+      "active": true,
+      "order": 2
+    },
+    "dani": {
+      "name": "Dani",
+      "role": "Colorista",
+      "specialties": ["quimica", "estetica"],
+      "active": true,
+      "order": 3
+    },
+    "tago": {
+      "name": "Tago",
+      "role": "Especialista em Barba",
+      "specialties": ["barba", "estetica"],
+      "active": true,
+      "order": 4
+    }
+  },
+  "plans": {
+    "silver": {
+      "name": "Silver",
+      "label": "Essencial",
+      "price": 45,
+      "period": "month",
+      "features": ["2 cortes assinatura por mês", "1 aparo de barba", "Bebida de cortesia"],
+      "active": true,
+      "order": 1
+    },
+    "gold": {
+      "name": "Gold",
+      "label": "Premium",
+      "price": 85,
+      "period": "month",
+      "features": ["Cortes assinatura ilimitados", "Barba ilimitada", "Prioridade no agendamento", "Bebidas premium"],
+      "active": true,
+      "popular": true,
+      "order": 2
+    },
+    "platinum": {
+      "name": "Platinum",
+      "label": "Executivo",
+      "price": 150,
+      "period": "month",
+      "features": ["Tudo do plano Gold", "Barba com toalha quente semanal", "Acesso ao lounge VIP exclusivo", "20% de desconto em produtos"],
+      "active": true,
+      "order": 3
+    }
+  }
+}

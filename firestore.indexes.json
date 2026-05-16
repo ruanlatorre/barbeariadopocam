@@ -1,0 +1,59 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "appointments",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "status",
+          "mode": "ASCENDING"
+        },
+        {
+          "fieldPath": "date",
+          "mode": "ASCENDING"
+        },
+        {
+          "fieldPath": "time",
+          "mode": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "appointments",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "barberId",
+          "mode": "ASCENDING"
+        },
+        {
+          "fieldPath": "date",
+          "mode": "ASCENDING"
+        },
+        {
+          "fieldPath": "time",
+          "mode": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "appointments",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "userId",
+          "mode": "ASCENDING"
+        },
+        {
+          "fieldPath": "date",
+          "mode": "DESCENDING"
+        },
+        {
+          "fieldPath": "time",
+          "mode": "DESCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

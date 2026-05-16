@@ -1,0 +1,122 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/users/$(request.auth.uid))
+        && get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin';
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function nonEmptyString(field, maxSize) {
+      return !(field in request.resource.data)
+        || (request.resource.data[field] is string
+          && request.resource.data[field].size() > 0
+          && request.resource.data[field].size() <= maxSize);
+    }
+
+    function validAppointmentCreate() {
+      return signedIn()
+        && hasOnlyAllowedFields([
+          'userId',
+          'name',
+          'phone',
+          'date',
+          'day',
+          'month',
+          'time',
+          'service',
+          'serviceId',
+          'barber',
+          'barberId',
+          'status',
+          'source',
+          'createdAt'
+        ])
+        && request.resource.data.keys().hasAll(['userId', 'date', 'service', 'status', 'createdAt'])
+        && request.resource.data.userId == request.auth.uid
+        && request.resource.data.status == 'pending'
+        && request.resource.data.createdAt == request.time
+        && nonEmptyString('userId', 128)
+        && nonEmptyString('name', 120)
+        && nonEmptyString('phone', 32)
+        && nonEmptyString('date', 32)
+        && nonEmptyString('month', 32)
+        && nonEmptyString('time', 16)
+        && nonEmptyString('service', 80)
+        && nonEmptyString('serviceId', 40)
+        && nonEmptyString('barber', 80)
+        && nonEmptyString('barberId', 40)
+        && nonEmptyString('source', 40)
+        && (!('day' in request.resource.data)
+          || (request.resource.data.day is int
+            && request.resource.data.day >= 1
+            && request.resource.data.day <= 31));
+    }
+
+    match /services/{serviceId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /barbers/{barberId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /plans/{planId} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    match /appointments/{appointmentId} {
+      allow create: if validAppointmentCreate();
+      allow read, update, delete: if isAdmin()
+        || (signedIn() && resource.data.userId == request.auth.uid);
+    }
+
+    match /users/{userId} {
+      allow create: if signedIn()
+        && request.auth.uid == userId
+        && hasOnlyAllowedFields([
+          'displayName',
+          'email',
+          'photoURL',
+          'phone',
+          'coins',
+          'planId',
+          'createdAt',
+          'updatedAt'
+        ]);
+      allow read: if isAdmin() || (signedIn() && request.auth.uid == userId);
+      allow update: if isAdmin()
+        || (signedIn()
+          && request.auth.uid == userId
+          && hasOnlyAllowedFields([
+            'displayName',
+            'email',
+            'photoURL',
+            'phone',
+            'coins',
+            'planId',
+            'createdAt',
+            'updatedAt'
+          ])
+          && request.resource.data.coins == resource.data.coins
+          && request.resource.data.planId == resource.data.planId);
+      allow delete: if isAdmin();
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
